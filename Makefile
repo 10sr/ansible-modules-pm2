@@ -4,7 +4,7 @@ pipenv := pipenv
 sdist:
 	$(python) setup.py sdist
 
-wheel: installdeps
+wheel:
 	$(pipenv) run python3 setup.py bdist_wheel
 
 installdeps:
