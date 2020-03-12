@@ -9,3 +9,7 @@ wheel:
 
 installdeps:
 	$(pipenv) install --dev
+
+# Do this after updating dependencies in setup.cfg
+updatedeps:
+	$(pipenv) update
