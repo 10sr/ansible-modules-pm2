@@ -1,0 +1,6 @@
+---
+# tasks file for pm2tasks
+- name: assert
+  assert:
+    that:
+      - true
