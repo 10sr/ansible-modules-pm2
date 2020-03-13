@@ -1,0 +1,7 @@
+include README.md
+include Makefile
+include Pipfile
+include Pipfile.lock
+exclude .gitignore
+
+graft tests
