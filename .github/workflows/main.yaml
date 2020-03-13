@@ -1,0 +1,16 @@
+name: Test CI
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - 'master'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone
+        uses: actions/checkout@v1
+      - name: test
+        run: pwd
