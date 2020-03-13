@@ -13,4 +13,4 @@ jobs:
       - name: Clone
         uses: actions/checkout@v1
       - name: test
-        run: pwd
+        run: docker run hello-world
