@@ -347,6 +347,13 @@
             ],
             "version": "==0.3.0"
         },
+        "docker": {
+            "hashes": [
+                "sha256:1c2ddb7a047b2599d1faec00889561316c674f7099427b9c51e8cb804114b553",
+                "sha256:ddae66620ab5f4bce769f64bcd7934f880c8abe6aa50986298db56735d0f722e"
+            ],
+            "version": "==4.2.0"
+        },
         "fasteners": {
             "hashes": [
                 "sha256:007e4d2b2d4a10093f67e932e5166722d2eab83b77724156e92ad013c6226574",
@@ -450,6 +457,9 @@
             "version": "==1.1.1"
         },
         "molecule": {
+            "extras": [
+                "docker"
+            ],
             "hashes": [
                 "sha256:10cd5eed0f2b1a8676d867e572d2b2e85a94f9af91e6e21136ccfbf830e2203e",
                 "sha256:bed8d8080fcb7985641b2191f80a957aca1b404bee393bc76f862cb2addb06f2"
@@ -650,6 +660,13 @@
                 "sha256:8512e83f1d90f8e481024d58512ac9c053bf16f54d9138520a0929396820dd78"
             ],
             "version": "==20.0.10"
+        },
+        "websocket-client": {
+            "hashes": [
+                "sha256:0fc45c961324d79c781bab301359d5a1b00b13ad1b10415a4780229ef71a5549",
+                "sha256:d735b91d6d1692a6a181f2a8c9e0238e5f6373356f561bb9dc4c7af36f452010"
+            ],
+            "version": "==0.57.0"
         },
         "wheel": {
             "hashes": [
