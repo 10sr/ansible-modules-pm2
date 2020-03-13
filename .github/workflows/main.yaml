@@ -12,5 +12,7 @@ jobs:
     steps:
       - name: Clone
         uses: actions/checkout@v1
-      - name: test
-        run: docker run hello-world
+      - name: Install denendencies
+        run: make installdeps
+      - name: Run molecule test
+        run: pipenv
