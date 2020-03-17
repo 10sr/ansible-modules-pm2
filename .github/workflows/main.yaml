@@ -12,9 +12,9 @@ jobs:
     steps:
       - name: Clone
         uses: actions/checkout@v1
-      - name: Install Pipenv
-        run: python -m pip install pipenv
       - name: Install denendencies
-        run: make installdeps
+        run: |
+          python -m pip install pipenv
+          make installdeps
       - name: Run molecule test
         run: pipenv
