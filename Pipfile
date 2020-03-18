@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-ansible-modules-pm2 = {editable = true,extras = ["dev"],path = "."}
+ansible-modules-pm2 = {extras = ["dev"],path = "."}
 
 [packages]
-ansible-modules-pm2 = {editable = true,path = "."}
+ansible-modules-pm2 = {path = "."}
