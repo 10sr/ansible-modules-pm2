@@ -3,8 +3,14 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
+# Hack to handle local package with Pipenv
+# When editable is set, Pipenv cannot install local package correctly
+# When editable is not set, Pipenv does not install dependencies of local package
+# So seems to need both...
 [dev-packages]
 ansible-modules-pm2 = {extras = ["dev"],path = "."}
+ansible-modules-pm2-dep = {editable = true,extras = ["dev"],path = "."}
 
 [packages]
 ansible-modules-pm2 = {path = "."}
+ansible-modules-pm2-dep = {editable = true,path = "."}
