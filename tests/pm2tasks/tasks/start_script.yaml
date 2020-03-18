@@ -3,7 +3,7 @@
   copy:
     dest: /tmp/app1.sh
     content: |
-      #!/bin/sh
+      #!/bin/bash
       while true; do date; sleep 10; done
     mode: "0755"
     validate: bash -n %s
