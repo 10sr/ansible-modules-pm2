@@ -250,7 +250,8 @@ class _Pm2(object):
         self.pid = -1
         self.pm2_status = None
 
-        rc, out, err = self._run_pm2(["jlist"], check_rc=True)
+        rc, out, err = self._run_pm2(["jlist", "--silent"],
+                                     check_rc=True)
         try:
             apps = self.module.from_json(out)
         except ValueError as e:

@@ -2,6 +2,16 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include pm2tasks"
+    # Current pm2 requires node >= 8.10.0
+    - name: Install nodejs
+      yum:
+        name: nodejs
+
+    - name: Install pm2
+      npm:
+        name: pm2
+        global: yes
+
+    - name: Include pm2tasks
       include_role:
-        name: "pm2tasks"
+        name: pm2tasks

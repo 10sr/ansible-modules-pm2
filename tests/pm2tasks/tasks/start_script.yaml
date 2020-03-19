@@ -1,0 +1,28 @@
+---
+- name: Create bash script
+  copy:
+    dest: /tmp/app1.sh
+    content: |
+      #!/bin/bash
+      while true; do date; sleep 10; done
+    mode: "0755"
+    validate: bash -n %s
+
+- name: Ensure app1 started
+  pm2:
+    name: app1
+    script: /tmp/app1.sh
+    state: started
+
+- name: Ensure app1 started again
+  pm2:
+    name: app1
+    script: /tmp/app1.sh
+    state: started
+  register: _r1
+
+- name: Assert action result
+  assert:
+    that:
+      - _r1 is not changed
+      - _r1.pm2_status == "online"
