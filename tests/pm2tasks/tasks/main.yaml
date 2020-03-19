@@ -1,2 +1,3 @@
 ---
 - import_tasks: start_script.yaml
+- import_tasks: start_config.yaml

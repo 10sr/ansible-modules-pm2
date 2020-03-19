@@ -18,7 +18,6 @@
   pm2:
     name: app1
     script: /tmp/app1.sh
-    state: started
   register: _r1
 
 - name: Assert action result
