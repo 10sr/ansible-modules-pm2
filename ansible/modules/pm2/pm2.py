@@ -33,7 +33,7 @@ options:
         that will not run commands unless necessary.
       - C(restarted) will always restart the process.
       - C(reloaded) will always reload.
-      - Note that C(restarted) and C(reloaded) will start the service if
+      - Note that C(restarted) will start the service if
         it is not already started.
   config:
     default: null
@@ -223,7 +223,7 @@ class _Pm2(object):
         if chdir is None:
             config = os.path.abspath(config)
             chdir = os.path.dirname(config)
-        rc, out, err = self._run_pm2(["startOrReload", config,
+        rc, out, err = self._run_pm2(["reload", config,
                                       "--name", self.name,
                                       "--update-env"],
                                      check_rc=True, cwd=chdir)
