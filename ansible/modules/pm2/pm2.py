@@ -143,6 +143,8 @@ class _TaskFailedException(Exception):
 
 
 class _Pm2App(object):
+    """Class for one pm2 app."""
+
     # application info
     info_raw = None
     pm_id = -1
