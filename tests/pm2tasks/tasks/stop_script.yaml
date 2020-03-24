@@ -19,7 +19,6 @@
   pm2:
     name: app3
     state: stopped
-  register: _r3
   tags: molecule-idempotence-notest
 
 - name: Ensure app3 stopped again
