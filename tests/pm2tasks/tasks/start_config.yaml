@@ -1,0 +1,46 @@
+---
+- name: Create bash script
+  copy:
+    dest: /tmp/app2.sh
+    content: |
+      #!/bin/bash
+      while true; do date; sleep 15; done
+    mode: "0755"
+    validate: bash -n %s
+
+- name: Create app2 ecosystem config file
+  copy:
+    dest: /tmp/app2.json
+    content: |
+      {
+        "apps": [{
+          "name": "app2",
+          "script": "/tmp/app2.sh"
+        }]
+      }
+
+- name: Ensure app2 started
+  pm2:
+    name: app2
+    config: /tmp/app2.json
+    state: started
+
+- name: Ensure app2 started again
+  pm2:
+    name: app2
+    config: /tmp/app2.json
+  register: _r2
+
+- name: Assert action result
+  assert:
+    that:
+      - _r2 is not changed
+      - _r2.pm2_status == "online"
+
+- name: Reload app2 config file
+  pm2:
+    name: app2
+    config: /tmp/app2.json
+    state: reloaded
+  register: _r2
+  tags: molecule-idempotence-notest

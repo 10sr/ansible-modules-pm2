@@ -1,2 +1,5 @@
 ---
 - import_tasks: start_script.yaml
+- import_tasks: start_config.yaml
+- import_tasks: stop_script.yaml
+- import_tasks: absent.yaml

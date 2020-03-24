@@ -1,0 +1,41 @@
+---
+- name: Create bash script
+  copy:
+    dest: /tmp/app3.sh
+    content: |
+      #!/bin/bash
+      while true; do date; sleep 10; done
+    mode: "0755"
+    validate: bash -n %s
+
+- name: Ensure app3 started
+  pm2:
+    name: app3
+    script: /tmp/app3.sh
+    state: started
+  tags: molecule-idempotence-notest
+
+- name: Ensure app3 stopped
+  pm2:
+    name: app3
+    state: stopped
+  tags: molecule-idempotence-notest
+
+- name: Ensure app3 stopped again
+  pm2:
+    name: app3
+    state: stopped
+  register: _r3
+
+- name: Assert action result
+  assert:
+    that:
+      - _r3 is not changed
+      - _r3.pm2_status == "stopped"
+
+- name: Ensure that absent state is OK for stopped
+  pm2:
+    # There are no app named app4
+    name: app4
+    state: stopped
+
