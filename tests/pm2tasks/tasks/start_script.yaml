@@ -25,3 +25,9 @@
     that:
       - _r1 is not changed
       - _r1.pm2_status == "online"
+
+- name: Ensure app1 restarted
+  pm2:
+    name: app1
+    state: restarted
+  tags: molecule-idempotence-notest

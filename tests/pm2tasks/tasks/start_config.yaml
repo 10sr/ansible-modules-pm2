@@ -44,4 +44,3 @@
     state: reloaded
   register: _r2
   tags: molecule-idempotence-notest
-

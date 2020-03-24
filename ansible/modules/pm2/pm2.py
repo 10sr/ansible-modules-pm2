@@ -33,8 +33,8 @@ options:
         that will not run commands unless necessary.
       - C(restarted) will always restart the process.
       - C(reloaded) will always reload.
-      - Note that C(restarted) will start the service if
-        it is not already started.
+      - Note that C(restarted) will fail when the process does not
+        exist (action does not start it automatically).
   config:
     default: null
     description:
@@ -209,6 +209,7 @@ class _Pm2(object):
         if chdir is None:
             target = os.path.abspath(target)
             chdir = os.path.dirname(target)
+        # FIXME: restart cannot accept script arg
         rc, out, err = self._run_pm2(["restart", target, "--name", self.name],
                                      check_rc=True, cwd=chdir)
         self._update_info()
