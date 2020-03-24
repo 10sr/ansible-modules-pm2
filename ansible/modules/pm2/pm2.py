@@ -142,7 +142,7 @@ class _TaskFailedException(Exception):
         return
 
 
-class _Pm2(object):
+class _Pm2App(object):
     # application info
     info_raw = None
     pm_id = -1
@@ -279,7 +279,7 @@ class _Pm2(object):
 
 def do_pm2(module, name, config, script, state, chdir, executable):
     result = {}
-    pm2 = _Pm2(module, name, executable)
+    pm2 = _Pm2App(module, name, executable)
 
     result["diff"] = {}
     result["diff"]["before"] = {
