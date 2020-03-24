@@ -82,11 +82,10 @@ EXAMPLES = '''
     name: myapp
     state: restarted
 
-- name: Reload myapp config file, in all cases
+- name: Reload myapp, in all cases
   pm2:
     name: myapp
     state: reloaded
-    config: /path/to/myapp/myapp.json
 
 - name: Delete myapp, if exists
   pm2:

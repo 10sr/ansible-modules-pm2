@@ -40,7 +40,6 @@
 - name: Reload app2 config file
   pm2:
     name: app2
-    config: /tmp/app2.json
     state: reloaded
   register: _r2
   tags: molecule-idempotence-notest
