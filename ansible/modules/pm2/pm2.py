@@ -162,7 +162,21 @@ class _Pm2(object):
         self._update_info()
         return
 
-    def start(self, target, chdir=None):
+    def start_with_config(self, target, chdir=None):
+        assert target is not None
+        if chdir is None:
+            target = os.path.abspath(target)
+            chdir = os.path.dirname(target)
+        rc, out, err = self._run_pm2(["start", target],
+                                     check_rc=True, cwd=chdir)
+        self._update_info()
+        return {
+            "rc": rc,
+            "stdout": out,
+            "stderr": err
+        }
+
+    def start_script(self, target, chdir=None):
         assert target is not None
         if chdir is None:
             target = os.path.abspath(target)
@@ -281,11 +295,6 @@ def do_pm2(module, name, config, script, state, chdir, executable):
     }
 
     if state == "started":
-        target = config or script
-        if target is None:
-            raise _TaskFailedException(
-                msg="Neigher CONFIG nor SCRIPT is given for start command"
-            )
         if pm2.is_started():
             result.update(
                 changed=False,
@@ -293,7 +302,14 @@ def do_pm2(module, name, config, script, state, chdir, executable):
             )
         else:
             if not module.check_mode:
-                cmd_result = pm2.start(target=target, chdir=chdir)
+                if config:
+                    cmd_result = pm2.start_with_config(config, chdir=chdir)
+                elif script:
+                    cmd_result = pm2.start_script(script, chdir=chdir)
+                else:
+                    raise _TaskFailedException(
+                        msg="Neigher CONFIG nor SCRIPT is given for start command"
+                    )
                 result.update(cmd_result)
             result.update(
                 changed=True,
