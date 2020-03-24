@@ -386,6 +386,7 @@ def do_pm2(module, name, config, script, state, chdir, executable):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
+            # TODO: Accept list of names for start_with_config
             name=dict(required=True),
             state=dict(choices=['started',
                                 'stopped',
