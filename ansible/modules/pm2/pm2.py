@@ -220,15 +220,9 @@ class _Pm2(object):
             "stderr": err
         }
 
-    def reload(self, config, chdir=None):
-        assert config is not None
-        if chdir is None:
-            config = os.path.abspath(config)
-            chdir = os.path.dirname(config)
-        rc, out, err = self._run_pm2(["reload", config,
-                                      "--name", self.name,
-                                      "--update-env"],
-                                     check_rc=True, cwd=chdir)
+    def reload(self):
+        rc, out, err = self._run_pm2(["reload", self.name, "--update-env"],
+                                     check_rc=True)
         self._update_info()
         return {
             "rc": rc,
@@ -345,12 +339,12 @@ def do_pm2(module, name, config, script, state, chdir, executable):
         )
 
     elif state == "reloaded":
-        if config is None:
-            raise _TaskFailedException(
-                msg="CONFIG is required for reload command"
-            )
+        if config:
+            module.warn("CONFIG is ignored when state is reloaded")
+        if script:
+            module.warn("SCRIPT is ignored when state is restarted")
         if not module.check_mode:
-            cmd_result = pm2.reload(config=config, chdir=chdir)
+            cmd_result = pm2.reload()
             result.update(cmd_result)
         result.update(
             changed=True,
