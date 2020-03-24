@@ -196,22 +196,9 @@ class _Pm2(object):
             "stderr": err
         }
 
-    def restart(self, target=None, chdir=None):
-        if target is None:
-            rc, out, err = self._run_pm2(["restart", self.name],
-                                         check_rc=True)
-            self._update_info()
-            return {
-                "rc": rc,
-                "stdout": out,
-                "stderr": err
-            }
-        if chdir is None:
-            target = os.path.abspath(target)
-            chdir = os.path.dirname(target)
-        # FIXME: restart cannot accept script arg
-        rc, out, err = self._run_pm2(["restart", target, "--name", self.name],
-                                     check_rc=True, cwd=chdir)
+    def restart(self):
+        rc, out, err = self._run_pm2(["restart", self.name],
+                                     check_rc=True)
         self._update_info()
         return {
             "rc": rc,
@@ -329,9 +316,12 @@ def do_pm2(module, name, config, script, state, chdir, executable):
             )
 
     elif state == "restarted":
-        target = config or script
+        if config:
+            module.warn("config arg is ignored when state is restarted")
+        if script:
+            module.warn("script arg is ignored when state is restarted")
         if not module.check_mode:
-            cmd_result = pm2.restart(target=target, chdir=chdir)
+            cmd_result = pm2.restart()
             result.update(cmd_result)
         result.update(
             changed=True,
