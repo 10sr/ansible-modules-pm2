@@ -333,9 +333,9 @@ def do_pm2(module, name, config, script, state, chdir, executable):
 
     elif state == "restarted":
         if config:
-            module.warn("config arg is ignored when state is restarted")
+            module.warn("CONFIG is ignored when state is restarted")
         if script:
-            module.warn("script arg is ignored when state is restarted")
+            module.warn("SCRIPT is ignored when state is restarted")
         if not module.check_mode:
             cmd_result = pm2.restart()
             result.update(cmd_result)
@@ -347,7 +347,7 @@ def do_pm2(module, name, config, script, state, chdir, executable):
     elif state == "reloaded":
         if config is None:
             raise _TaskFailedException(
-                msg="CONFIG is not given for reload command"
+                msg="CONFIG is required for reload command"
             )
         if not module.check_mode:
             cmd_result = pm2.reload(config=config, chdir=chdir)
