@@ -25,6 +25,7 @@ options:
     required: true
     description:
       - Name of the application.
+      - Required for all cases to check current status of app
   state:
     choices: [started, stopped, restarted, reloaded, absent, deleted]
     default: started
