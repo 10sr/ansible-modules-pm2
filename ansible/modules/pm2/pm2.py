@@ -14,7 +14,7 @@ DOCUMENTATION = '''
 module: pm2
 author:
   - "10sr (@10sr)"
-version_added: "2.4"
+version_added: "-"
 short_description: Manage processes via pm2
 description:
   - Manage the state of processes via pm2 process manager.
