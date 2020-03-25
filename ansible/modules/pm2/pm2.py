@@ -14,7 +14,7 @@ DOCUMENTATION = '''
 module: pm2
 author:
   - "10sr (@10sr)"
-version_added: "2.4"
+version_added: "-"
 short_description: Manage processes via pm2
 description:
   - Manage the state of processes via pm2 process manager.
@@ -25,6 +25,7 @@ options:
     required: true
     description:
       - Name of the application.
+      - Required for all cases to check current status of app
   state:
     choices: [started, stopped, restarted, reloaded, absent, deleted]
     default: started
@@ -82,11 +83,10 @@ EXAMPLES = '''
     name: myapp
     state: restarted
 
-- name: Reload myapp config file, in all cases
+- name: Reload myapp, in all cases
   pm2:
     name: myapp
     state: reloaded
-    config: /path/to/myapp/myapp.json
 
 - name: Delete myapp, if exists
   pm2:
@@ -142,7 +142,9 @@ class _TaskFailedException(Exception):
         return
 
 
-class _Pm2(object):
+class _Pm2App(object):
+    """Class for one pm2 app."""
+
     # application info
     info_raw = None
     pm_id = -1
@@ -162,7 +164,21 @@ class _Pm2(object):
         self._update_info()
         return
 
-    def start(self, target, chdir=None):
+    def start_with_config(self, target, chdir=None):
+        assert target is not None
+        if chdir is None:
+            target = os.path.abspath(target)
+            chdir = os.path.dirname(target)
+        rc, out, err = self._run_pm2(["start", target],
+                                     check_rc=True, cwd=chdir)
+        self._update_info()
+        return {
+            "rc": rc,
+            "stdout": out,
+            "stderr": err
+        }
+
+    def start_script(self, target, chdir=None):
         assert target is not None
         if chdir is None:
             target = os.path.abspath(target)
@@ -196,22 +212,9 @@ class _Pm2(object):
             "stderr": err
         }
 
-    def restart(self, target=None, chdir=None):
-        if target is None:
-            rc, out, err = self._run_pm2(["restart", self.name],
-                                         check_rc=True)
-            self._update_info()
-            return {
-                "rc": rc,
-                "stdout": out,
-                "stderr": err
-            }
-        if chdir is None:
-            target = os.path.abspath(target)
-            chdir = os.path.dirname(target)
-        # FIXME: restart cannot accept script arg
-        rc, out, err = self._run_pm2(["restart", target, "--name", self.name],
-                                     check_rc=True, cwd=chdir)
+    def restart(self):
+        rc, out, err = self._run_pm2(["restart", self.name],
+                                     check_rc=True)
         self._update_info()
         return {
             "rc": rc,
@@ -219,15 +222,9 @@ class _Pm2(object):
             "stderr": err
         }
 
-    def reload(self, config, chdir=None):
-        assert config is not None
-        if chdir is None:
-            config = os.path.abspath(config)
-            chdir = os.path.dirname(config)
-        rc, out, err = self._run_pm2(["reload", config,
-                                      "--name", self.name,
-                                      "--update-env"],
-                                     check_rc=True, cwd=chdir)
+    def reload(self):
+        rc, out, err = self._run_pm2(["reload", self.name, "--update-env"],
+                                     check_rc=True)
         self._update_info()
         return {
             "rc": rc,
@@ -284,7 +281,7 @@ class _Pm2(object):
 
 def do_pm2(module, name, config, script, state, chdir, executable):
     result = {}
-    pm2 = _Pm2(module, name, executable)
+    pm2 = _Pm2App(module, name, executable)
 
     result["diff"] = {}
     result["diff"]["before"] = {
@@ -294,11 +291,6 @@ def do_pm2(module, name, config, script, state, chdir, executable):
     }
 
     if state == "started":
-        target = config or script
-        if target is None:
-            raise _TaskFailedException(
-                msg="Neigher CONFIG nor SCRIPT is given for start command"
-            )
         if pm2.is_started():
             result.update(
                 changed=False,
@@ -306,7 +298,14 @@ def do_pm2(module, name, config, script, state, chdir, executable):
             )
         else:
             if not module.check_mode:
-                cmd_result = pm2.start(target=target, chdir=chdir)
+                if config:
+                    cmd_result = pm2.start_with_config(config, chdir=chdir)
+                elif script:
+                    cmd_result = pm2.start_script(script, chdir=chdir)
+                else:
+                    raise _TaskFailedException(
+                        msg="Neigher CONFIG nor SCRIPT is given for start command"
+                    )
                 result.update(cmd_result)
             result.update(
                 changed=True,
@@ -329,9 +328,12 @@ def do_pm2(module, name, config, script, state, chdir, executable):
             )
 
     elif state == "restarted":
-        target = config or script
+        if config:
+            module.warn("CONFIG is ignored when state is restarted")
+        if script:
+            module.warn("SCRIPT is ignored when state is restarted")
         if not module.check_mode:
-            cmd_result = pm2.restart(target=target, chdir=chdir)
+            cmd_result = pm2.restart()
             result.update(cmd_result)
         result.update(
             changed=True,
@@ -339,12 +341,12 @@ def do_pm2(module, name, config, script, state, chdir, executable):
         )
 
     elif state == "reloaded":
-        if config is None:
-            raise _TaskFailedException(
-                msg="CONFIG is not given for reload command"
-            )
+        if config:
+            module.warn("CONFIG is ignored when state is reloaded")
+        if script:
+            module.warn("SCRIPT is ignored when state is restarted")
         if not module.check_mode:
-            cmd_result = pm2.reload(config=config, chdir=chdir)
+            cmd_result = pm2.reload()
             result.update(cmd_result)
         result.update(
             changed=True,
@@ -386,6 +388,7 @@ def do_pm2(module, name, config, script, state, chdir, executable):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
+            # TODO: Accept list of names for start_with_config
             name=dict(required=True),
             state=dict(choices=['started',
                                 'stopped',
