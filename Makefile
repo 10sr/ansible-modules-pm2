@@ -25,5 +25,5 @@ test-molecule:
 
 doc: README.md
 
-README.md: meta/README.md.j2 $(shell find ansible -type f -name '*.py')
+README.md: meta/README.md.j2 meta/gen_readme.py $(shell find ansible -type f -name '*.py')
 	$(pipenv) run meta/gen_readme.py $< >$@
