@@ -27,7 +27,7 @@ doc: README.md
 
 check-doc:
 	$(pipenv) run meta/gen_readme.py meta/README.md.j2 >.README.md.tmp
-	diff README.md .README.md.tmp >/dev/null 2>&1
+	diff README.md .README.md.tmp
 	$(RM) .README.md.tmp
 
 README.md: meta/README.md.j2 meta/gen_readme.py $(shell find ansible -type f -name '*.py')
