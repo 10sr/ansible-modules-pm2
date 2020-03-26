@@ -20,6 +20,7 @@ Examples
 
 
 ```yaml
+---
 - name: Start myapp with process config file, if not running
   pm2:
     name: myapp

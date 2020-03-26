@@ -21,3 +21,9 @@ test: test-molecule
 
 test-molecule:
 	cd tests && $(pipenv) run ./molecule.sh
+
+
+doc: README.md
+
+README.md: meta/README.md.j2 $(shell find ansible -type f -name '*.py')
+	$(pipenv) run meta/gen_readme.py $< >$@
