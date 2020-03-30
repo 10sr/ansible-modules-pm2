@@ -3,10 +3,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+from ansible.module_utils import pm2
+
 ANSIBLE_METADATA = {
     'status': ['preview'],
     'supported_by': 'community',
-    'metadata_version': '1.0'
+    'metadata_version': pm2.__version__
 }
 
 DOCUMENTATION = '''
