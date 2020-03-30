@@ -33,9 +33,12 @@ jobs:
       - name: Install denendencies
         run: |
           set -eux
+          if ! pipenv run which molecule
+          then
           # Sometimes fails to install packages for unknown reason
           # so do this twice
-          make installdeps || make installdeps
+              make installdeps || make installdeps
+          fi
           pipenv run which molecule
       - name: Run molecule test
         run: make check
