@@ -1,4 +1,6 @@
 ![Test CI](https://github.com/10sr/ansible-modules-pm2/workflows/Test%20CI/badge.svg)
+[![PyPI](https://img.shields.io/pypi/v/ansible-modules-pm2)](https://pypi.org/project/ansible-modules-pm2/)
+
 
 
 ansible-modules-pm2
