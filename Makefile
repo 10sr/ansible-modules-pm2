@@ -34,5 +34,6 @@ README.md: meta/README.md.j2 meta/gen_readme.py $(shell find ansible -type f -na
 	$(pipenv) run meta/gen_readme.py $< >$@
 
 
+publish_repository ?= testpypi
 publish: sdist wheel
-	$(pipenv) run twine upload --repository pypitest dist/*
+	$(pipenv) run twine upload --repository $(publish_repository) dist/*
