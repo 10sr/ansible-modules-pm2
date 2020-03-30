@@ -30,9 +30,9 @@ def main(argv):
         choices = []
         for e in v.get("choices", []):
             if e == v.get("default"):
-                choices.append(e + " (default)")
+                choices.append(f"`{e}` (default)")
             else:
-                choices.append(e)
+                choices.append(f"`{e}`")
 
         comments = []
         for e in v.get("description", []):
@@ -40,7 +40,7 @@ def main(argv):
             e = re.sub(r"I\(([^)]+)\)", r"`\1`", e)
             comments.append(e)
 
-        arguments_body.append((parameters, "<ul>" + "".join(f"<li>{e}</li>" for e in choices) + "</ul>", "<br>".join(comments)))
+        arguments_body.append((parameters, "<br>".join(choices), "<br>".join(comments)))
 
     print(
         tpl.render(
