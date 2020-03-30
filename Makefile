@@ -32,3 +32,7 @@ check-doc:
 
 README.md: meta/README.md.j2 meta/gen_readme.py $(shell find ansible -type f -name '*.py')
 	$(pipenv) run meta/gen_readme.py $< >$@
+
+
+publish: sdist wheel
+	$(pipenv) run twine upload --repository pypitest dist/*
