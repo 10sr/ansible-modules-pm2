@@ -14,7 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        # Molecule does not work on Python3.5
+        python-version: [3.6, 3.7, 3.8]
     steps:
       - name: Checkout
         uses: actions/checkout@v1
