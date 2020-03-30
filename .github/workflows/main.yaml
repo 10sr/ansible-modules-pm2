@@ -19,12 +19,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Cache dependencies
+      - name: Cache packages
         # https://github.com/actions/cache/issues/152
         uses: actions/cache@v1
         with:
           path: ~/.cache
-          key: ${{ runner.os }}-python${{ matrix.python-version }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+          key: cache.${{ runner.os }}-python${{ matrix.python-version }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+      - name: Cache environment
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: venv.${{ runner.os }}-python${{ matrix.python-version }}-pip-${{ hashFiles('**/Pipfile.lock') }}
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
