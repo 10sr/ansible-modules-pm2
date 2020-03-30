@@ -15,6 +15,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+      - name: Cache dependencies
+        # https://github.com/actions/cache/issues/152
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
       - name: Setup Python3.7
         uses: actions/setup-python@v1
         with:

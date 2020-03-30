@@ -41,11 +41,10 @@ options:
     description:
       - Process configuration file, in JSON or YAML format.
       - Either I(config) or I(script) is required when I(state=started).
-      - Required when I(state=reloaded).
   script:
     default: null
     description:
-      - Script file to start, usually JavaScript file.
+      - Executalbe file to start.
       - Either I(config) or I(script) is required when I(state=started).
   executable:
     default: null
