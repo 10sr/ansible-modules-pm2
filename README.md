@@ -6,7 +6,7 @@
 ansible-modules-pm2
 ===================
 
-Manage processes via [PM2](https://pm2.keymetrics.io/)
+Ansible Module to Manage Processes via [PM2](https://pm2.keymetrics.io/)
 
 - Manage the state of processes via pm2 process manager
 - Start/Stop/Restart/Reload/Delete applications
