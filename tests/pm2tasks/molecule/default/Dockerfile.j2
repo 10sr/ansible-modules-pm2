@@ -1,0 +1,8 @@
+FROM docker.io/python:"{{ item.python_version }}"-alpine
+
+# Current pm2 requires node >= 8.10.0
+# pm2 requires bash to run shellscripts
+RUN apk update && apk add nodejs npm bash
+RUN npm install -g pm2
+
+#CMD [sleep infinity]
