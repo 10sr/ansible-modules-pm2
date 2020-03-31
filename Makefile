@@ -1,7 +1,7 @@
 pipenv := pipenv
 
 sdist:
-	$(python) setup.py sdist
+	python setup.py sdist
 
 wheel:
 	$(pipenv) run python setup.py bdist_wheel
