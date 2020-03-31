@@ -15,7 +15,8 @@ jobs:
     strategy:
       matrix:
         # Molecule does not work on Python3.5
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.8]
+        remote-python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -47,4 +48,4 @@ jobs:
           fi
           pipenv run which molecule
       - name: Run molecule test
-        run: make check
+        run: make check remote_python_version=${{ matrix.remote-python-version }}
