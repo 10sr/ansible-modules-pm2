@@ -17,6 +17,7 @@ jobs:
         # Molecule does not work on Python3.5
         python-version: [3.8]
         remote-python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+        ansible-version: [2.9.6]
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -25,12 +26,12 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.cache
-          key: cache.${{ runner.os }}-python${{ matrix.python-version }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-python${{ matrix.python-version }}-ansible${{ matrix.ansible-version }}-pipcache }}
       - name: Cache environment
         uses: actions/cache@v1
         with:
           path: ~/.local/share/virtualenvs
-          key: venv.${{ runner.os }}-python${{ matrix.python-version }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-python${{ matrix.python-version }}-ansible${{ matrix.ansible-version }}-venv }}
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
@@ -44,7 +45,10 @@ jobs:
           then
           # Sometimes fails to install packages for unknown reason
           # so do this twice
-              make installdeps || make installdeps
+              pipenv install --skip-lock ansible==${{ matrix.ansible-version }}
+              pipenv install --skip-lock .[dev]
+              # Hack to install local dependencies
+              pipenv install --skip-lock --editable .[dev]
           fi
           pipenv run which molecule
       - name: Run molecule test
