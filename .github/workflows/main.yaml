@@ -42,15 +42,13 @@ jobs:
       - name: Install denendencies
         run: |
           set -eux
-          if ! pipenv run which molecule
-          then
           # Sometimes fails to install packages for unknown reason
           # so do this twice
-              pipenv install --skip-lock ansible==${{ matrix.ansible-version }}
-              # Hack to install local dependencies
-              pipenv install --skip-lock --editable .[dev]
-              pipenv install --skip-lock .[dev]
-          fi
+          pipenv install --skip-lock ansible==${{ matrix.ansible-version }}
+          # Hack to install local dependencies
+          pipenv install --skip-lock --editable .[dev]
+          pipenv install --skip-lock .[dev]
+          # Check versions
           pipenv run ansible --version
           pipenv run molecule --version
       - name: Run molecule test
