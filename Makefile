@@ -1,4 +1,3 @@
-python ?= python3
 pipenv := pipenv
 
 sdist:
