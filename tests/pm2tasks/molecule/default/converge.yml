@@ -2,6 +2,9 @@
 - name: Converge
   hosts: all
   tasks:
+    - name: Print python version
+      debug:
+        msg: "Python version: {{ ansible_python_version }}"
     - name: Include role
       include_role:
         name: pm2tasks

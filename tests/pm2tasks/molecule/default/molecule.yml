@@ -5,9 +5,16 @@ driver:
   name: docker
 platforms:
   - name: instance0
-    dockerfile: Dockerfile
-    image: pm2tasks-test
+    dockerfile: Dockerfile.j2
+    image: pm2tasks-test-python${REMOTE_PYTHON_VERSION:-3.7}
+    python_version: ${REMOTE_PYTHON_VERSION:-3.7}
+    #override_command: no
+    command: sleep infinity
 provisioner:
   name: ansible
+  inventory:
+    group_vars:
+      all:
+        ansible_python_interpreter: /usr/local/bin/python
 verifier:
   name: ansible

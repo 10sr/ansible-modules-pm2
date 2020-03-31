@@ -1,4 +1,3 @@
-python ?= python3
 pipenv := pipenv
 
 sdist:
@@ -19,8 +18,9 @@ check: test check-doc
 
 test: test-molecule
 
+remote_python_version ?=
 test-molecule:
-	cd tests && $(pipenv) run ./molecule.sh
+	cd tests && REMOTE_PYTHON_VERSION=$(remote_python_version) $(pipenv) run ./molecule.sh
 
 
 doc: README.md

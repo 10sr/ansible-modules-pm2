@@ -12,27 +12,46 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Molecule does not work on Python3.5
+        python-version: [3.8]
+        remote-python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+        # Molecule requires ansible >= 2.8
+        ansible-version: [2.8.10, 2.9.6]
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Cache dependencies
+      - name: Cache packages
         # https://github.com/actions/cache/issues/152
         uses: actions/cache@v1
         with:
           path: ~/.cache
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
-      - name: Setup Python3.7
+          key: ${{ runner.os }}-python${{ matrix.python-version }}-ansible${{ matrix.ansible-version }}-pipcache }}
+      - name: Cache environment
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-python${{ matrix.python-version }}-ansible${{ matrix.ansible-version }}-venv }}
+      - name: Setup Python
         uses: actions/setup-python@v1
         with:
-          python-version: 3.7
+          python-version: ${{ matrix.python-version }}
       - name: Install Pipenv
         run: python -m pip install pipenv
       - name: Install denendencies
         run: |
           set -eux
+          if ! pipenv run which molecule
+          then
           # Sometimes fails to install packages for unknown reason
           # so do this twice
-          make installdeps || make installdeps
-          pipenv run which molecule
+              pipenv install --skip-lock ansible==${{ matrix.ansible-version }}
+              # Hack to install local dependencies
+              pipenv install --skip-lock --editable .[dev]
+              pipenv install --skip-lock .[dev]
+          fi
+          pipenv run ansible --version
+          pipenv run molecule --version
       - name: Run molecule test
-        run: make check
+        run: make check remote_python_version=${{ matrix.remote-python-version }}
