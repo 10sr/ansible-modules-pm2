@@ -46,10 +46,11 @@ jobs:
           # Sometimes fails to install packages for unknown reason
           # so do this twice
               pipenv install --skip-lock ansible==${{ matrix.ansible-version }}
-              pipenv install --skip-lock .[dev]
               # Hack to install local dependencies
               pipenv install --skip-lock --editable .[dev]
+              pipenv install --skip-lock .[dev]
           fi
-          pipenv run which molecule
+          pipenv run ansible --version
+          pipenv run molecule --version
       - name: Run molecule test
         run: make check remote_python_version=${{ matrix.remote-python-version }}
