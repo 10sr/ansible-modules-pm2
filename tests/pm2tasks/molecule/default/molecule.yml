@@ -6,8 +6,8 @@ driver:
 platforms:
   - name: instance0
     dockerfile: Dockerfile.j2
-    image: pm2tasks-test-python${REMOVE_PYTHON_VERSION:-3.7}
-    python_version: ${REMOVE_PYTHON_VERSION:-3.7}
+    image: pm2tasks-test-python${REMOTE_PYTHON_VERSION:-3.7}
+    python_version: ${REMOTE_PYTHON_VERSION:-3.7}
     #override_command: no
     command: sleep infinity
 provisioner:
