@@ -17,6 +17,35 @@ jobs:
     needs: test
     if: github.event_name == 'release'
     steps:
+      - name: Assert version
+        run: test "`python ./setup.py --version`" == "${{ github.ref }}"
+      - name: Cache packages
+        # https://github.com/actions/cache/issues/152
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache
+          key: ${{ runner.os }}-python3.8-${{ hashFiles('**/Pipfile.lock')-pipcache }}
+      - name: Cache environment
+        uses: actions/cache@v1
+        with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-python3.8-${{ hashFiles('**/Pipfile.lock')-venv }}
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install Pipenv
+        run: python -m pip install pipenv
+      - name: Install denendencies
+        run: |
+          set -eux
+          if ! pipenv run twine --version
+          then
+              # Sometimes fails to install packages for unknown reason
+              # so do this twice
+              pipenv install --dev || pipenv install --dev
+          fi
+          pipenv run twine --version
       - name: Publish to pypi
         run: echo Release
         env:
