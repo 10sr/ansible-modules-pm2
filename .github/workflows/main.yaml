@@ -17,6 +17,8 @@ jobs:
     needs: test
     if: github.event_name == 'release'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v1
       - name: Assert version
         run: test "`python ./setup.py --version`" == "${{ github.ref }}"
       - name: Cache packages
