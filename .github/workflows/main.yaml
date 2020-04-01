@@ -8,8 +8,21 @@ on:
     types: [opened, synchronize]
     branches:
       - 'master'
+  release:
+    types: [published]
 
 jobs:
+  publish:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'release'
+    steps:
+      - name: Publish to pypi
+        run: echo Release
+        env:
+          TWINE_USERNAME: __token__
+          # TWINE_PASSWORD: XXX
+
   test:
     runs-on: ubuntu-latest
     strategy:
