@@ -44,9 +44,7 @@ jobs:
           set -eux
           if ! pipenv run twine --version
           then
-              # Sometimes fails to install packages for unknown reason
-              # so do this twice
-              pipenv install --dev || pipenv install --dev
+              make publish-installdeps
           fi
           pipenv run twine --version
       - name: Publish to pypi
