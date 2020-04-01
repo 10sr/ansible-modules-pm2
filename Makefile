@@ -31,7 +31,8 @@ check-doc:
 	$(RM) .README.md.tmp
 
 README.md: meta/README.md.j2 meta/gen_readme.py $(shell find ansible -type f -name '*.py')
-	$(pipenv) run meta/gen_readme.py $< >$@
+	$(pipenv) run meta/gen_readme.py $< >.README.md.tmp
+	mv -vf .README.md.tmp $@
 
 
 publish_repository ?= testpypi

@@ -16,8 +16,30 @@ Ansible Module to Manage Processes via [PM2](https://pm2.keymetrics.io/)
 Tested on:
 
 - Host Python: 3.8
-- Remote Python: 2.7, 3.5, 3.6, 3.7, 3.8
+- Target host Python: 2.7, 3.5, 3.6, 3.7, 3.8
 - Ansible: 2.8.10, 2.9.6 (Should work with older versions)
+
+
+Installation
+------------
+
+Install via pip:
+
+```shell
+pip install ansible-modules-pm2
+```
+
+
+PM2 package have to be installed to target hosts.
+For example, add following to your playbook to install pm2 globally:
+
+
+```yaml
+- npm:
+    name: pm2
+    global: yes
+```
+
 
 
 Usage
