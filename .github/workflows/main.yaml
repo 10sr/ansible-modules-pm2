@@ -55,8 +55,6 @@ jobs:
       - name: Install denendencies
         run: |
           set -eux
-          # Sometimes fails to install packages for unknown reason
-          # so do this twice
           pipenv install --skip-lock ansible==${{ matrix.ansible-version }}
           # Hack to install local dependencies
           pipenv install --skip-lock --editable .[dev]
