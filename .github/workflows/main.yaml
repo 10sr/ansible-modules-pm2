@@ -47,10 +47,10 @@ jobs:
           fi
           pipenv run twine --version
       - name: Publish to pypi
-        run: echo Release
+        run: make publish publish_repository=pypi
         env:
           TWINE_USERNAME: __token__
-          # TWINE_PASSWORD: XXX
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
 
   test:
     runs-on: ubuntu-latest
