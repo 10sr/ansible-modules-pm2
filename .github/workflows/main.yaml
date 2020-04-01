@@ -20,9 +20,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Assert version
-        run: test refs/tags/v`python ./setup.py --version` == "${{ github.ref }}"
+        run: |
+          set -eux
+          test refs/tags/v`python ./setup.py --version` == "${{ github.ref }}"
       - name: Cache packages
-        # https://github.com/actions/cache/issues/152
         uses: actions/cache@v1
         with:
           path: ~/.cache
