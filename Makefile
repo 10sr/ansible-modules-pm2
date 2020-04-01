@@ -1,11 +1,5 @@
 pipenv := pipenv
 
-sdist:
-	python setup.py sdist
-
-wheel:
-	$(pipenv) run python setup.py bdist_wheel
-
 installdeps:
 	$(pipenv) install --dev
 
@@ -35,6 +29,17 @@ README.md: meta/README.md.j2 meta/gen_readme.py $(shell find ansible -type f -na
 	mv -vf .README.md.tmp $@
 
 
+sdist:
+	python setup.py sdist
+
+wheel:
+	$(pipenv) run python setup.py bdist_wheel
+
 publish_repository ?= testpypi
 publish: sdist wheel
 	$(pipenv) run twine upload --repository $(publish_repository) dist/*
+
+# Do not add to devdependencies because different platforms install
+# different packages
+publish-installdeps:
+	$(pipenv) run pip install twine wheel
