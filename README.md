@@ -45,9 +45,9 @@ For example, add following to your playbook to install pm2 globally:
 Usage
 =====
 
-Basic usage is similar to one of `service` or `supervisorctl` module:
-specify the name and its state. To start an app `script` or `config`
-have to be given.
+Basic usage is similar to `service` or `supervisorctl` module:
+specify the name and its state. To start an app, give either `script`
+or `config`.
 
 
 Examples
