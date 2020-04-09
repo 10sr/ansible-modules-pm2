@@ -85,10 +85,10 @@ jobs:
       - name: Install denendencies
         run: |
           set -eux
-          pipenv install --skip-lock ansible==${{ matrix.ansible-version }}
-          # Hack to install local dependencies
-          pipenv install --skip-lock --editable .[dev]
-          pipenv install --skip-lock .[dev]
+          # Do not use pipenv install to specify ansible version here
+          # (Locking is very slow and is it not needed)
+          pipenv run python -m pip install ansible==${{ matrix.ansible-version }}
+          pipenv run python -m pip install .[dev]
           # Check versions
           pipenv run ansible --version
           pipenv run molecule --version
