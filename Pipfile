@@ -14,3 +14,6 @@ ansible-modules-pm2-dep = {editable = true,extras = ["dev"],path = "."}
 [packages]
 ansible-modules-pm2 = {path = "."}
 ansible-modules-pm2-dep = {editable = true,path = "."}
+
+[pipenv]
+allow_prereleases = true

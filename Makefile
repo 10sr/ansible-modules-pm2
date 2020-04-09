@@ -8,7 +8,8 @@ updatedeps:
 	$(pipenv) update
 
 
-check: test check-doc
+check: test lint
+lint: check-doc flake8
 
 test: test-molecule
 
@@ -43,3 +44,20 @@ publish: sdist wheel
 # different packages
 publish-installdeps:
 	$(pipenv) run pip install twine wheel
+
+
+# Formatter and Linter ###############
+
+flake8:
+	$(pipenv) run flake8 --version
+	$(pipenv) run flake8 .
+
+# black
+
+black:
+	$(pipenv) run black .
+
+# isort
+
+isort:
+	$(pipenv) run isort -rc .
