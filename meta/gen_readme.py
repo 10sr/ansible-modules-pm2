@@ -5,15 +5,15 @@ import sys
 
 import jinja2
 import yaml
-from tabulate import tabulate
 
 from ansible.modules.pm2 import pm2
+from tabulate import tabulate
 
 
 def main(argv):
     doc_yaml = pm2.DOCUMENTATION
     examples_yaml = pm2.EXAMPLES
-    returns_yaml = pm2.RETURN
+    # return_yaml = pm2.RETURN
 
     env = jinja2.Environment(loader=jinja2.FileSystemLoader("."))
     tpl = env.get_template(argv[1])
