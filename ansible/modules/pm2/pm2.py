@@ -3,15 +3,18 @@
 
 from __future__ import absolute_import, division, print_function
 
+import os
+
 from ansible.module_utils import pm2
+from ansible.module_utils.basic import AnsibleModule
 
 ANSIBLE_METADATA = {
-    'status': ['preview'],
-    'supported_by': 'community',
-    'metadata_version': pm2.__version__
+    "status": ["preview"],
+    "supported_by": "community",
+    "metadata_version": pm2.__version__,
 }
 
-DOCUMENTATION = '''
+DOCUMENTATION = """
 ---
 module: pm2
 author:
@@ -58,9 +61,9 @@ options:
       - Change into this directory before running pm2 start command.
       - When I(state=started) and this option is omitted, use the
         directory where I(config) or I(script) exists.
-'''
+"""
 
-EXAMPLES = '''
+EXAMPLES = """
 ---
 - name: Start myapp with process config file, if not running
   pm2:
@@ -108,9 +111,9 @@ EXAMPLES = '''
     config: /path/to/myapp/myapp.json
     executable: /path/to/myapp/node_modules/.bin/pm2
     chdir: /path/to/working/directory
-'''
+"""
 
-RETURN = '''
+RETURN = """
 ---
 pm2_state:
   description: Pm2 application status
@@ -127,11 +130,8 @@ pid:
   returned: success
   type: int
   sample: 514
-'''
+"""
 
-
-import os
-from ansible.module_utils.basic import AnsibleModule
 
 __metaclass__ = type
 
@@ -170,68 +170,42 @@ class _Pm2App(object):
         if chdir is None:
             target = os.path.abspath(target)
             chdir = os.path.dirname(target)
-        rc, out, err = self._run_pm2(["start", target],
-                                     check_rc=True, cwd=chdir)
+        rc, out, err = self._run_pm2(["start", target], check_rc=True, cwd=chdir)
         self._update_info()
-        return {
-            "rc": rc,
-            "stdout": out,
-            "stderr": err
-        }
+        return {"rc": rc, "stdout": out, "stderr": err}
 
     def start_script(self, target, chdir=None):
         assert target is not None
         if chdir is None:
             target = os.path.abspath(target)
             chdir = os.path.dirname(target)
-        rc, out, err = self._run_pm2(["start", target, "--name", self.name],
-                                     check_rc=True, cwd=chdir)
+        rc, out, err = self._run_pm2(
+            ["start", target, "--name", self.name], check_rc=True, cwd=chdir
+        )
         self._update_info()
-        return {
-            "rc": rc,
-            "stdout": out,
-            "stderr": err
-        }
+        return {"rc": rc, "stdout": out, "stderr": err}
 
     def stop(self):
-        rc, out, err = self._run_pm2(["stop", self.name],
-                                     check_rc=True)
+        rc, out, err = self._run_pm2(["stop", self.name], check_rc=True)
         self._update_info()
-        return {
-            "rc": rc,
-            "stdout": out,
-            "stderr": err
-        }
+        return {"rc": rc, "stdout": out, "stderr": err}
 
     def delete(self):
-        rc, out, err = self._run_pm2(["delete", self.name],
-                                     check_rc=True)
+        rc, out, err = self._run_pm2(["delete", self.name], check_rc=True)
         self._update_info()
-        return {
-            "rc": rc,
-            "stdout": out,
-            "stderr": err
-        }
+        return {"rc": rc, "stdout": out, "stderr": err}
 
     def restart(self):
-        rc, out, err = self._run_pm2(["restart", self.name],
-                                     check_rc=True)
+        rc, out, err = self._run_pm2(["restart", self.name], check_rc=True)
         self._update_info()
-        return {
-            "rc": rc,
-            "stdout": out,
-            "stderr": err
-        }
+        return {"rc": rc, "stdout": out, "stderr": err}
 
     def reload(self):
-        rc, out, err = self._run_pm2(["reload", self.name, "--update-env"],
-                                     check_rc=True)
+        rc, out, err = self._run_pm2(
+            ["reload", self.name, "--update-env"], check_rc=True
+        )
         self._update_info()
-        return {
-            "rc": rc,
-            "stdout": out,
-            "stderr": err
-        }
+        return {"rc": rc, "stdout": out, "stderr": err}
 
     def is_started(self):
         return self.pm2_status == "online"
@@ -240,8 +214,9 @@ class _Pm2App(object):
         return self.pm2_status is not None
 
     def _run_pm2(self, args, check_rc=False, cwd=None):
-        return self.module.run_command(args=([self.pm2_executable] + args),
-                                       check_rc=check_rc, cwd=cwd)
+        return self.module.run_command(
+            args=([self.pm2_executable] + args), check_rc=check_rc, cwd=cwd
+        )
 
     def _update_info(self):
         self.info_raw = None
@@ -249,8 +224,7 @@ class _Pm2App(object):
         self.pid = -1
         self.pm2_status = None
 
-        rc, out, err = self._run_pm2(["jlist", "--silent"],
-                                     check_rc=True)
+        rc, out, err = self._run_pm2(["jlist", "--silent"], check_rc=True)
         try:
             apps = self.module.from_json(out)
         except ValueError as e:
@@ -288,15 +262,12 @@ def do_pm2(module, name, config, script, state, chdir, executable):
     result["diff"]["before"] = {
         "pm_id": pm2.pm_id,
         "pid": pm2.pid,
-        "pm2_status": pm2.pm2_status
+        "pm2_status": pm2.pm2_status,
     }
 
     if state == "started":
         if pm2.is_started():
-            result.update(
-                changed=False,
-                msg="{} already started".format(name)
-            )
+            result.update(changed=False, msg="{} already started".format(name))
         else:
             if not module.check_mode:
                 if config:
@@ -308,25 +279,16 @@ def do_pm2(module, name, config, script, state, chdir, executable):
                         msg="Neigher CONFIG nor SCRIPT is given for start command"
                     )
                 result.update(cmd_result)
-            result.update(
-                changed=True,
-                msg="Started {}".format(name)
-            )
+            result.update(changed=True, msg="Started {}".format(name))
 
     elif state == "stopped":
         if not pm2.is_started():
-            result.update(
-                changed=False,
-                msg="{} already stopped/absent".format(name)
-            )
+            result.update(changed=False, msg="{} already stopped/absent".format(name))
         else:
             if not module.check_mode:
                 cmd_result = pm2.stop()
                 result.update(cmd_result)
-            result.update(
-                changed=True,
-                msg="Stopped {}".format(name)
-            )
+            result.update(changed=True, msg="Stopped {}".format(name))
 
     elif state == "restarted":
         if config:
@@ -336,10 +298,7 @@ def do_pm2(module, name, config, script, state, chdir, executable):
         if not module.check_mode:
             cmd_result = pm2.restart()
             result.update(cmd_result)
-        result.update(
-            changed=True,
-            msg="Restarted {}".format(name)
-        )
+        result.update(changed=True, msg="Restarted {}".format(name))
 
     elif state == "reloaded":
         if config:
@@ -349,38 +308,25 @@ def do_pm2(module, name, config, script, state, chdir, executable):
         if not module.check_mode:
             cmd_result = pm2.reload()
             result.update(cmd_result)
-        result.update(
-            changed=True,
-            msg="Reloaded {}".format(name)
-        )
+        result.update(changed=True, msg="Reloaded {}".format(name))
 
     elif state == "absent" or state == "deleted":
         if not pm2.exists():
-            result.update(
-                changed=False,
-                msg="{} not exists".format(name)
-            )
+            result.update(changed=False, msg="{} not exists".format(name))
         else:
             if not module.check_mode:
                 cmd_result = pm2.delete()
                 result.update(cmd_result)
-            result.update(
-                changed=True,
-                msg="Deleted {}".format(name)
-            )
+            result.update(changed=True, msg="Deleted {}".format(name))
 
     else:
         raise _TaskFailedException(msg="Unknown state: {]".format(state))
 
-    result.update(
-        pm_id=pm2.pm_id,
-        pid=pm2.pid,
-        pm2_status=pm2.pm2_status
-    )
+    result.update(pm_id=pm2.pm_id, pid=pm2.pid, pm2_status=pm2.pm2_status)
     result["diff"]["after"] = {
         "pm_id": pm2.pm_id,
         "pid": pm2.pid,
-        "pm2_status": pm2.pm2_status
+        "pm2_status": pm2.pm2_status,
     }
 
     return result
@@ -391,48 +337,46 @@ def main():
         argument_spec=dict(
             # TODO: Accept list of names for start_with_config
             name=dict(required=True),
-            state=dict(choices=['started',
-                                'stopped',
-                                'restarted',
-                                'reloaded',
-                                'absent', 'deleted'],
-                       default='started'),
-            config=dict(type='path'),
-            script=dict(type='path'),
-            executable=dict(type='path'),
-            chdir=dict(type='path')
+            state=dict(
+                choices=[
+                    "started",
+                    "stopped",
+                    "restarted",
+                    "reloaded",
+                    "absent",
+                    "deleted",
+                ],
+                default="started",
+            ),
+            config=dict(type="path"),
+            script=dict(type="path"),
+            executable=dict(type="path"),
+            chdir=dict(type="path"),
         ),
         supports_check_mode=True,
-        mutually_exclusive=[['config', 'script']],
+        mutually_exclusive=[["config", "script"]],
     )
 
     try:
         result = do_pm2(
             module=module,
-            name=module.params['name'],
-            state=module.params['state'],
-            config=module.params['config'],
-            script=module.params['script'],
-            executable=module.params['executable'],
-            chdir=module.params['chdir']
+            name=module.params["name"],
+            state=module.params["state"],
+            config=module.params["config"],
+            script=module.params["script"],
+            executable=module.params["executable"],
+            chdir=module.params["chdir"],
         )
 
     except _TaskFailedException as e:
-        module.fail_json(
-            failed=True,
-            msg=e.msg,
-            **e.kargs
-        )
+        module.fail_json(failed=True, msg=e.msg, **e.kargs)
         return
 
     assert "changed" in result
     assert "msg" in result
-    module.exit_json(
-        failed=False,
-        **result
-    )
+    module.exit_json(failed=False, **result)
     return
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
