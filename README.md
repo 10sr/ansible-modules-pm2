@@ -1,5 +1,6 @@
 [![Github Actions](https://github.com/10sr/ansible-modules-pm2/workflows/Build/badge.svg?event=push)](https://github.com/10sr/ansible-modules-pm2/actions)
 [![PyPI version](https://badge.fury.io/py/ansible-modules-pm2.svg)](https://badge.fury.io/py/ansible-modules-pm2)
+[![Downloads](https://pepy.tech/badge/ansible-modules-pm2)](https://pepy.tech/project/ansible-modules-pm2)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 
