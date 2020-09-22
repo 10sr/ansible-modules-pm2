@@ -27,26 +27,19 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.cache
-          key: ${{ runner.os }}-python3.8-${{ hashFiles('**/Pipfile.lock') }}-pipcache
-      - name: Cache environment
-        uses: actions/cache@v1
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-python3.8-${{ hashFiles('**/Pipfile.lock') }}-venv
+          key: ${{ runner.os }}-python3.8-${{ hashFiles('**/setup.cfg') }}-pipcache
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - name: Install Pipenv
-        run: python -m pip install pipenv
       - name: Install denendencies
         run: |
           set -eux
-          if ! pipenv run twine --version
+          if ! twine --version
           then
               make publish-installdeps
           fi
-          pipenv run twine --version
+          twine --version
       - name: Publish to pypi
         run: make publish publish_repository=pypi
         env:
@@ -70,28 +63,23 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.cache
-          key: ${{ runner.os }}-python${{ matrix.python-version }}-ansible${{ matrix.ansible-version }}-pipcache }}
-      - name: Cache environment
-        uses: actions/cache@v1
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-python${{ matrix.python-version }}-ansible${{ matrix.ansible-version }}-venv }}
+          key: ${{ runner.os }}-python${{ matrix.python-version }}-${{ hashFiles('**/setup.cfg') }}-pipcache }}
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Pipenv
-        run: python -m pip install pipenv
+      - name: Update pip and setuptools (py35 only)
+        # setuptools bundled with py35 cannot read metadata in setup.cfg
+        run: pip install --upgrade pip setuptools
+        if: matrix.python-version == '3.5'
       - name: Install denendencies
         run: |
           set -eux
-          # Do not use pipenv install to specify ansible version here
-          # (Locking is very slow and is it not needed)
-          pipenv run python -m pip install ansible==${{ matrix.ansible-version }}
-          pipenv run python -m pip install .[dev]
+          pip install ansible==${{ matrix.ansible-version }}
+          make installdeps
           # Check versions
-          pipenv run ansible --version
-          pipenv run molecule --version
+          ansible --version
+          molecule --version
       - name: Run test
         run: make test remote_python_version=${{ matrix.remote-python-version }}
 
@@ -104,18 +92,11 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.cache
-          key: ${{ runner.os }}-python3.8-${{ hashFiles('**/Pipfile.lock') }}-pipcache
-      - name: Cache environment
-        uses: actions/cache@v1
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-python3.8-${{ hashFiles('**/Pipfile.lock') }}-venv
+          key: ${{ runner.os }}-python3.8-${{ hashFiles('**/setup.cfg') }}-pipcache
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - name: Install Pipenv
-        run: python -m pip install pipenv
       - name: Install denendencies
         run: |
           set -eux

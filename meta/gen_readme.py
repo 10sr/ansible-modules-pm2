@@ -6,8 +6,9 @@ import sys
 import jinja2
 import yaml
 
-from ansible.modules.pm2 import pm2
 from tabulate import tabulate
+
+from ansible.modules.pm2 import pm2
 
 
 def main(argv):
