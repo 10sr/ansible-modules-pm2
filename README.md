@@ -28,6 +28,8 @@ Installation
 Install via pip:
 
 ```shell
+# Have to be installed in the same environment as ansible.
+# For details please see the Troubleshooting section below.
 pip install ansible-modules-pm2
 ```
 
@@ -118,6 +120,31 @@ Arguments
 | script          |                                                                                        | Executalbe file to start.<br>Either `config` or `script` is required when `state=started`.                                                                                                                                                                                                                |
 | executable      |                                                                                        | Path to pm2 executable.                                                                                                                                                                                                                                                                                   |
 | chdir           |                                                                                        | Change into this directory before running pm2 start command.<br>When `state=started` and this option is omitted, use the directory where `config` or `script` exists.                                                                                                                                     |
+
+
+Troubleshooting
+===============
+
+
+ERROR! couldn't resolve module/action 'pm2'
+-------------------------------------------
+
+This and ansible modules have to be installed in the same environment.
+You can run the following commands to check where these modules were installed:
+
+```
+$ python  # Start a python interactive shell 
+Python 3.7.3 (default, Jun 13 2019, 13:22:19)
+[Clang 9.0.0 (clang-900.0.39.2)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import ansible
+>>> import ansible.modules.pm2
+>>> ansible.__path__
+['/path/to/your/venv/lib/python3.7/site-packages/ansible']
+>>> ansible.modules.pm2.__path__
+['/path/to/your/venv/lib/python3.7/site-packages/ansible/modules/pm2']
+```
+
 
 License
 =======
