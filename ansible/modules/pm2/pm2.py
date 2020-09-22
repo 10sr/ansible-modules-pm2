@@ -320,7 +320,7 @@ def do_pm2(module, name, config, script, state, chdir, executable):
             result.update(changed=True, msg="Deleted {}".format(name))
 
     else:
-        raise _TaskFailedException(msg="Unknown state: {]".format(state))
+        raise _TaskFailedException(msg="Unknown state: {}".format(state))
 
     result.update(pm_id=pm2.pm_id, pid=pm2.pid, pm2_status=pm2.pm2_status)
     result["diff"]["after"] = {
